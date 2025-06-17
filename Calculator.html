@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grade Calculator</title>
+  </head>
+  <body>
+    <h1>The Grade CalCulator</h1>
+
+    <!--introduction-->
+    <p>
+      Find out the grade of a course based on your <em>>marks</em>.This
+      Calculator will help you to <em>easlly and accurately</em> calcurate the
+      grade of your course and give you, your <mark>GPA</mark>
+    </p>
+    <hr />
+    <h2>Enter the Coursename and Score% below</h2>
+    <form action="theInputs" onsubmit="calculateGPA(event)">
+      <table id="courseTable">
+        <thead>
+          <tr>
+            <th>CouorseName</th>
+            <th>Score%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input
+                type="text"
+                name="courseName"
+                id="courseName"
+                placeholder="courses"
+                autofocus
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                name="score"
+                required
+                min="0"
+                max="100"
+                placeholder="%"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button type="button" onclick="addrows()"><u>+ addrows</u></button><br />
+      <hr />
+      <p>
+        Make sure you entered the correct marks to each course before you
+        calcurate your results, if not press to start again.
+      </p>
+      <button type="submit">Calculate</button>
+      <input type="reset" value="Clear" />
+
+      <!--TABLE OF RESULTS-->
+      <hr />
+      <table id="resultTable" style="margin-top: 20px; display: none">
+        <head>
+          <tr>
+            <p><mark>Table Results</mark></p>
+            <th>Course Name</th>
+            <th>Grade Letter</th>
+            <th>GPA</th>
+          </tr>
+        </head>
+        <tbody></tbody>
+      </table>
+      <p id="averageGPA" style="font-weight: bold"></p>
+    </form>
+
+    <script>
+      // Method to add rows
+      function addrows() {
+        const tableBody = document
+
+          .getElementById("courseTable")
+          .getElementsByTagName("tbody")[0];
+        const newRow = tableBody.insertRow();
+
+        const courseCell = newRow.insertCell(0);
+        const scoreCell = newRow.insertCell(1);
+
+        courseCell.innerHTML =
+          ' <input type="text" name="courseName" id="courseName" placeholder="courses">';
+        scoreCell.innerHTML =
+          '<input type="number" name="Score" required min="0" max="100" placeholder="%">';
+      }
+      // Method to calculate GPA
+      function calculateGPA(event) {
+        event.preventDefault();
+        const courseInputs = document.querySelectorAll(
+          "input[name='courseName']"
+        );
+        const scoreInputs = document.querySelectorAll("input[name='score']");
+        const resultTableBody = document
+          .getElementById("resultTable")
+          .getElementsByTagName("tbody")[0];
+
+        document.getElementById("resultTable").style.display = "table";
+
+        let totalGPA = 0;
+        let count = 0;
+        for (let i = 0; i < scoreInputs.length; i++) {
+          const score = parseFloat(scoreInputs[i].value);
+          const courseName = courseInputs[i].value;
+
+          if (!isNaN(score)) {
+            const gpa = getGPA(score);
+            const grade = getGrade(score);
+
+            const row = resultTableBody.insertRow();
+            row.insertCell(0).textContent = courseName;
+            row.insertCell(1).textContent = grade;
+            row.insertCell(2).textContent = gpa.toFixed(1);
+            totalGPA += gpa;
+            count++;
+          }
+        }
+        document
+          .getElementById("theInputs")
+          .addEventListener("submit", calculateGPA);
+
+        const average = count > 0 ? (totalGPA / count).toFixed(2) : "0.00";
+        document.getElementById("averageGPA").textContent =
+          "Average GPA: " + average;
+
+        function getGPA(score) {
+          if (score >= 85 && score <= 100) return 4.0;
+          else if (score >= 75 && score < 85) return 3.5;
+          else if (score >= 65 && score < 75) return 3.0;
+          else if (score >= 55 && score <= 65) return 2.5;
+          else if (score >= 45 && score <= 55) return 2.0;
+          else if (score >= 35 && score <= 45) return 1.5;
+          else return 1.0;
+        }
+
+        function getGrade(score) {
+          if (score >= 85 && score <= 100) return "A+";
+          else if (score >= 75 && score <= 85) return "A";
+          else if (score >= 65 && score <= 75) return "B+";
+          else if (score >= 55 && score <= 65) return "B";
+          else if (score >= 45 && score <= 55) return "C+";
+          else if (score >= 35 && score <= 45) return "C";
+          else return "D";
+        }
+      }
+    </script>
+  </body>
+</html>
